@@ -2,7 +2,7 @@
 param
 (
     # SharepointOnline project site collection URL
-    $SiteUrl = $(throw "SiteUrl parameter is required")
+    $siteUrl = $(throw "SiteUrl parameter is required")
 )
 # Load ReST helper methods
 . .\ReST.ps1
@@ -38,7 +38,7 @@ $body = "{
 }"
 
 # ReST request to create a task
-Post-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')/Tasks/Add" $body
+Post-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')/Draft/Tasks/Add" $body
 
 # Resource parameters as JSON payload
 $resourceid = [Guid]::NewGuid()
