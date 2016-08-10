@@ -1,3 +1,8 @@
+<#
+  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+  See LICENSE in the project root for license information.
+#>
+
 # PS helper methods to call ReST API methods targeting Project Online tenants
 $global:fedAuthTicket = ''
 $global:digestValue = ''
