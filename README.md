@@ -1,11 +1,11 @@
-# Office 365 Project Online ReST Code Sample
+# Project ReST Basic Operations
 
-This Project Online ReST code sample demonstrates how to create and update a project using ReST API
+The Project ReST Basic Operations demonstrates how to create and update a project using ReST API
 
 ###Prerequisites
 To use this Project Online ReST code sample, you need the following:
 * An Office 365 tenant with a Project license
-* The SharePoint client runtime library
+* Project CSOM client library.  It is available as a Nuget Package from [here](https://www.nuget.org/packages/Microsoft.SharePointOnline.CSOM/)
 * PowerShell v4.0
 
 ###Modules
@@ -19,10 +19,8 @@ This sample runs ReST API methods that create, read, update, or delete data. Whe
 ## Questions and comments
 
 ## Additional resources
-* [PS namespace (ps.js)] (https://msdn.microsoft.com/en-us/library/office/jj669820.aspx)
-* [Client-side object model (CSOM) for Project 2013] (https://msdn.microsoft.com/en-us/library/office/jj163123.aspx)
 * [JavaScript library and REST reference for Project Server 2013] (https://msdn.microsoft.com/en-us/library/office/jj712612.aspx)
-* [SharePoint Online SDK] (https://www.microsoft.com/en-us/download/details.aspx?id=42038)
+* [SharePoint and Project Online SDK] (https://www.nuget.org/packages/Microsoft.SharePointOnline.CSOM)
 
 ## Copyright
 Copyright (c) 2016 Microsoft. All rights reserved.
