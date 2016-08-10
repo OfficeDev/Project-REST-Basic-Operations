@@ -1,9 +1,9 @@
-# Project ReST Basic Operations
+# Project REST Basic Operations
 
-The Project ReST Basic Operations demonstrates how to create and update a project using ReST API
+The Project REST Basic Operations demonstrates how to create and update a project using REST API
 
 ###Prerequisites
-To use this Project Online ReST code sample, you need the following:
+To use this Project Online REST code sample, you need the following:
 * An Office 365 tenant with a Project license
 * Project CSOM client library.  It is available as a Nuget Package from [here](https://www.nuget.org/packages/Microsoft.SharePointOnline.CSOM/)
 * PowerShell v4.0
@@ -14,7 +14,7 @@ To use this Project Online ReST code sample, you need the following:
 * [UpdateProjectCustomFields](/updateprojectcustomfieldvalues.ps1)
 
 ##How the sample affects your tenant data
-This sample runs ReST API methods that create, read, update, or delete data. When running commands that delete or edit data, the sample creates sample data. The sample data is created or edited so that your actual tenant data is unaffected.
+This sample runs REST API methods that create, read, update, or delete data. When running commands that delete or edit data, the sample creates sample data. The sample data is created or edited so that your actual tenant data is unaffected.
 
 ## Questions and comments
 
