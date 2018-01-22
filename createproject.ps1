@@ -8,7 +8,7 @@
 param
 (
     # SharepointOnline project site collection URL
-    $siteUrl = $(throw "SiteUrl parameter is required")
+    $SiteUrl = $(throw "SiteUrl parameter is required")
 )
 # Load ReST helper methods
 . .\ReST.ps1
@@ -30,6 +30,19 @@ $body = "{
 # ReST request to create a project
 Post-ReSTRequest $SiteUrl "ProjectServer/Projects/Add" $body
 
+# Wait till new project is finally ready in SharepointOnline.
+While ($true)
+{
+    Start-Sleep -Seconds 1
+    Write-Host "Querying new project's readiness"
+    $result = Get-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')"
+    if ($result)
+    {
+        Write-Host "Project is ready"
+        break;
+    }
+}
+
 # ReST request to check out the project
 Post-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')/checkOut" $null
 
@@ -39,7 +52,9 @@ $body = "{
 	'parameters': {
 		'Id': '$taskid',
 		'Name': 'Task_$taskid',
-		'Notes': 'Created from PowerShell using REST API'
+		'Notes': 'Created from PowerShell using REST API',
+		'Start': '2016-01-04T08:00:00',
+		'Duration': '5d'
 	}
 }"
 
@@ -55,8 +70,23 @@ $body = "{
 	}
 }"
 
-# ReST request to create local a resource
-$result = Post-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')/Draft/ProjectResources/Add" $body
+# ReST request to create a local resource
+Post-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')/Draft/ProjectResources/Add" $body
+
+# Enterprise resource parameters as JSON payload
+$enterprise_resourceid = [Guid]::NewGuid()
+$body = "{
+	'parameters': {
+		'Id': '$enterprise_resourceid',
+		'Name': 'EnterpriseResource_$enterprise_resourceid'
+	}
+}"
+
+# ReST request to create an enterprise resource
+Post-ReSTRequest $SiteUrl "ProjectServer/EnterpriseResources/Add" $body
+
+# ReST request to add an enterprise resource to the project team
+Post-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')/Draft/ProjectResources/AddEnterpriseResourceById('$enterprise_resourceid')"
 
 # Assignment parameters as JSON payload
 $body = "{
@@ -67,7 +97,19 @@ $body = "{
 	}
 }"
 
-# ReST request to create an assignment
+# ReST request to create an assignment for the local resource
+Post-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')/Draft/Assignments/Add" $body
+
+# Assignment parameters as JSON payload
+$body = "{
+	'parameters': {
+		'ResourceId': '$enterprise_resourceid',
+		'TaskId': '$taskid',
+		'Notes': 'Created from PowerShell using REST API'
+	}
+}"
+
+# ReST request to create an assignment for the enterprise resource
 Post-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')/Draft/Assignments/Add" $body
 
 # ReST request to publish and check-in the project
