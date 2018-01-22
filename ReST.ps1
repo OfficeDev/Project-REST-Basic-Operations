@@ -11,7 +11,7 @@ function Set-SPOAuthenticationTicket([string] $siteUrl)
 {
 	$username = "admin@contoso.microsoft.com"
     Write-Host 'Enter password for user' $username 'on site' $siteUrl
-	$password = Read-Host | ConvertTo-SecureString -AsPlainText -Force
+	$password = Read-Host -AsSecureString
     
     # load the SP client runtime code
 	[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SharePoint.Client.Runtime")
