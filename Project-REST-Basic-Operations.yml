@@ -1,0 +1,19 @@
+### YamlMime:Sample
+sample:
+- name: 'Project add-in: REST Basic Operations'
+  path: ''
+  description: The Project REST Basic Operations demonstrates how to create and update a project using REST API.
+  readme: ''
+  generateZip: FALSE
+  isLive: TRUE
+  technologies:
+  - Office Add-in
+  azureDeploy: ''
+  author: NadinMerali
+  platforms: []
+  languages:
+  - REST API
+  extensions:
+    products:
+    - Project
+    scenarios: []
