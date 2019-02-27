@@ -1,3 +1,16 @@
+---
+topic: sample
+products:
+- Project
+- Office 365
+languages:
+- PowerShell
+extensions:
+  contentType: samples
+  platforms:
+  - REST API
+  createdDate: 11/23/2015 8:07:26 PM
+---
 # Project REST Basic Operations
 
 The Project REST Basic Operations demonstrates how to create and update a project using REST API
