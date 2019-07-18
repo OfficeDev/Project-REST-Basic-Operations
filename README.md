@@ -1,10 +1,10 @@
 ---
 topic: sample
 products:
-- Project
-- Office 365
+- office-project
+- office-365
 languages:
-- PowerShell
+- powershell
 extensions:
   contentType: samples
   platforms:
