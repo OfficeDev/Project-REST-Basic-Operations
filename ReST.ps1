@@ -28,7 +28,7 @@ function Set-SPOAuthenticationTicket([string] $siteUrl, $useWebLogin = $false)
     }
     else
     {
-        $username = "ca1@mod607022.onmicrosoft.com"
+        $username = "admin@contoso.onmicrosoft.com"
         Write-Host 'Enter password for user' $username 'on site' $siteUrl
         $password = Read-Host -AsSecureString
         
