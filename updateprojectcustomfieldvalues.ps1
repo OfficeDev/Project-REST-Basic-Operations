@@ -3,7 +3,8 @@
   See LICENSE in the project root for license information.
 #>
 
-﻿# Updates a Project Custom field value using ReST API
+
+# Updates a Project Custom field value using ReST API
 param
 (
     # SharepointOnline project site collection URL

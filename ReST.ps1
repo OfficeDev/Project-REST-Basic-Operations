@@ -3,25 +3,43 @@
   See LICENSE in the project root for license information.
 #>
 
+$ErrorActionPreference = "Stop"  # http://technet.microsoft.com/en-us/library/dd347731.aspx
+Set-StrictMode -Version "Latest" # http://technet.microsoft.com/en-us/library/dd347614.aspx
+
 # PS helper methods to call ReST API methods targeting Project Online tenants
-$global:fedAuthTicket = ''
+$global:accessHeader = ''
 $global:digestValue = ''
+
+[Reflection.Assembly]::LoadFrom("$($PSScriptRoot)\Microsoft.IdentityModel.Clients.ActiveDirectory.dll") | Out-Null
+
+function Get-AADAuthToken([Uri] $Uri)
+{
+	# NOTE: Create an azure app and update $clientId and $redirectUri below
+	$clientId = ""
+	$redirectUri = "https://login.microsoftonline.com/common/oauth2/nativeclient"
+
+	$authority = "https://login.microsoftonline.com/common"
+	$resource = $Uri.GetLeftPart([System.UriPartial]::Authority);
+
+	$promptBehavior = [Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Always
+	$platformParam = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters" -ArgumentList $promptBehavior
+    $authenticationContext = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext" -ArgumentList $authority, $False
+    $authenticationResult = $authenticationContext.AcquireTokenAsync($resource, $clientId, $redirectUri, $platformParam).Result
+
+	return $authenticationResult
+}
 
 function Set-SPOAuthenticationTicket([string] $siteUrl)
 {
-	$username = "admin@contoso.microsoft.com"
-    Write-Host 'Enter password for user' $username 'on site' $siteUrl
-	$password = Read-Host -AsSecureString
-    
-    # load the SP client runtime code
-	[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SharePoint.Client.Runtime")
-	$onlineCredentials = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($username, $password)
-	if ($onlineCredentials -ne $null)
+	$siteUri = New-Object Uri -ArgumentList $siteUrl
+
+	$authResult = Get-AADAuthToken -Uri $siteUri
+	if ($authResult -ne $null)
 	{
-		$global:fedAuthTicket = $onlineCredentials.GetAuthenticationCookie($SiteUrl, $true).TrimStart('SPOIDCRL=')
+		$global:accessHeader = $authResult.AccessTokenType + " " + $authResult.AccessToken
 	}
 	
-	if ([String]::IsNullOrEmpty($global:fedAuthTicket))
+	if ([String]::IsNullOrEmpty($global:accessHeader))
 	{
 		throw 'Could not obtain authentication ticket based on provided credentials for specified site'
 	}
@@ -45,13 +63,9 @@ function Build-ReSTRequest([string] $siteUrl, [string]$endpoint, [string]$method
 	    $req.ContentLength = $body.Length
     	$req.ContentType = "application/json"
 	}
-	
-    $domain = (New-Object System.Uri($url)).Authority
-    $cookies = New-Object System.Net.CookieContainer
-    $fedCookie = New-Object System.Net.Cookie 'SPOIDCRL', $global:fedAuthTicket, "", $domain
-    $cookies.Add($fedCookie)
-    
-    $req.CookieContainer = $cookies
+
+	# set Authorization header
+	$req.Headers.Add("Authorization", $global:accessHeader)
     
     if (-not $isDigestRequest)
     {
