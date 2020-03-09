@@ -12,7 +12,7 @@ param
     $projectId = $(throw "projectId parameter is required"),
     $customFieldId = $(throw "customFieldId parameter is required"),
     $lookupEntryId,     #use this parameter for custom fields associated with a lookup table
-	$customFieldValue   #use this parameter for non-lookup custom fields
+    $customFieldValue   #use this parameter for non-lookup custom fields
 )
 # Load ReST helper methods
 . .\ReST.ps1
@@ -29,7 +29,7 @@ Post-ReSTRequest $SiteUrl "ProjectServer/Projects('$projectid')/checkOut" $null
 $customFieldInternalName = ([xml] (Get-ReSTRequest $siteUrl "ProjectServer/CustomFields('$customFieldId')")).entry.content.properties.InternalName
 if (-not [String]::IsNullOrEmpty($lookupEntryId))
 {
-	$customFieldValue = ([xml] (Get-ReSTRequest $siteUrl "ProjectServer/CustomFields('$customFieldId')/LookupEntries('$lookupEntryId')")).entry.content.properties.InternalName
+    $customFieldValue = ([xml] (Get-ReSTRequest $siteUrl "ProjectServer/CustomFields('$customFieldId')/LookupEntries('$lookupEntryId')")).entry.content.properties.InternalName
 }
 # ReST request to update the project custom field (see http://msdn.microsoft.com/en-us/library/hh642428(v=office.12).aspx for parameter information)
 $body = "{'customFieldDictionary':[{'Key':'$customFieldInternalName','Value':'$customFieldValue', 'ValueType':'Edm.String'}]}"
