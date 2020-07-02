@@ -20,7 +20,3 @@ Set-DigestValue $siteUrl
 # Get list of projects using OData ReST API
 "OData"
 Get-ReSTRequest $SiteUrl "ProjectData/Projects"
-
-"CSOM"
-# Get list of projects using CSOM ReST API
-Get-ReSTRequest $SiteUrl "ProjectServer/Projects"

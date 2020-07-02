@@ -49,6 +49,7 @@ function Build-ReSTRequest([string] $siteUrl, [string]$endpoint, [string]$method
 {
     $url = ([string]$siteUrl).TrimEnd("/") + "/_api/" + $endpoint
     $req = [System.Net.WebRequest]::Create($url)
+    $req.Timeout = 120000
     $req.Method = $method
     
     [bool]$isReadOnly = (('GET','HEAD') -contains $req.Method)
