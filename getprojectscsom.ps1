@@ -4,7 +4,7 @@
 #>
 
 
-# Get list of projects using OData/CSOM ReST API
+# Get list of projects using CSOM ReST API
 param
 (
     # SharepointOnline project site collection URL
@@ -17,6 +17,5 @@ param
 Set-SPOAuthenticationTicket $siteUrl
 Set-DigestValue $siteUrl
 
-"CSOM"
 # Get list of projects using CSOM ReST API
 Get-ReSTRequest $SiteUrl "ProjectServer/Projects"
