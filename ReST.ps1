@@ -21,7 +21,9 @@ function Get-AuthToken([Uri] $Uri)
     # user's PJO login account
     $user = ""
     $scopes = New-Object System.Collections.Generic.List[string]
-    $scopes.Add("https://microsoft.sharepoint.com/Project.Write")
+    # Project.Write Permission scope for app eg:"https://brismith.sharepoint.com/Project.Write"
+    $writeScope = ""
+    $scopes.Add($writeScope)
     $pcaConfig = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($clientId).WithTenantId($tenantId).WithRedirectUri($redirectUri);
 
     $authenticationResult = $pcaConfig.Build().AcquireTokenInteractive($scopes)
