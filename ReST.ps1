@@ -26,9 +26,7 @@ function Get-AuthToken([Uri] $Uri)
     $scopes.Add($writeScope)
     $pcaConfig = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($clientId).WithTenantId($tenantId).WithRedirectUri($redirectUri);
 
-    $authenticationResult = $pcaConfig.Build().AcquireTokenInteractive($scopes)
-                .WithPrompt([Microsoft.Identity.Client.Prompt]::NoPrompt)
-                .WithLoginHint($user).ExecuteAsync().Result;
+    $authenticationResult = $pcaConfig.Build().AcquireTokenInteractive($scopes).WithPrompt([Microsoft.Identity.Client.Prompt]::NoPrompt).WithLoginHint($user).ExecuteAsync().Result;
 
     return $authenticationResult
 }
@@ -41,7 +39,7 @@ function Set-SPOAuthenticationTicket([string] $siteUrl)
     $authResult = Get-AuthToken -Uri $siteUri
     if ($authResult -ne $null)
     {
-        $global:accessHeader = $authResult.AccessTokenType + " " + $authResult.AccessToken
+        $global:accessHeader = $authResult.CreateAuthorizationHeader()
     }
     
     if ([String]::IsNullOrEmpty($global:accessHeader))
