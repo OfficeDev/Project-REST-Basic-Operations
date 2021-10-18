@@ -19,7 +19,7 @@ The Project REST Basic Operations demonstrates how to create and update a projec
 To use this Project Online REST code sample, you need the following:
 * An Office 365 tenant with a Project license
 * PowerShell v4.0
-* Latest ADAL.NET library. It is available as a Nuget Package from [here](https://www.nuget.org/packages/Microsoft.IdentityModel.Clients.ActiveDirectory/)
+* Latest MSAL .Net library. It is available as a Nuget Package from [here](https://www.nuget.org/packages/Microsoft.Identity.Client/)
 * For the files downloaded, please run "Unblock-File *" to unblock accessing the file.
 
 ###Modules
