@@ -70,6 +70,8 @@ function Build-ReSTRequest([string] $siteUrl, [string]$endpoint, [string]$method
 
     # set Authorization header
     $req.Headers.Add("Authorization", $global:accessHeader)
+    # handle ETag
+    $req.Headers.Add("If-Match", "*")
     
     if (-not $isDigestRequest)
     {
