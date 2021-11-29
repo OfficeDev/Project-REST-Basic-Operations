@@ -10,33 +10,36 @@ Set-StrictMode -Version "Latest" # http://technet.microsoft.com/en-us/library/dd
 $global:accessHeader = ''
 $global:digestValue = ''
 
-[Reflection.Assembly]::LoadFrom("$($PSScriptRoot)\Microsoft.IdentityModel.Clients.ActiveDirectory.dll") | Out-Null
+[Reflection.Assembly]::LoadFrom("$($PSScriptRoot)\Microsoft.Identity.Client.dll") | Out-Null
 
-function Get-AADAuthToken([Uri] $Uri)
+function Get-AuthToken([Uri] $Uri)
 {
-    # NOTE: Create an azure app and update $clientId and $redirectUri below
+    # NOTE: Create an azure app and update $clientId,$tenantId and $redirectUri below
     $clientId = ""
-    $redirectUri = "https://login.microsoftonline.com/common/oauth2/nativeclient"
+    $tenantId = ""
+    $redirectUri = ""
+    # user's PJO login account
+    $user = ""
+    $scopes = New-Object System.Collections.Generic.List[string]
+    # Project.Write Permission scope for app eg:"https://contoso.sharepoint.com/Project.Write"
+    $writeScope = ""
+    $scopes.Add($writeScope)
+    $pcaConfig = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($clientId).WithTenantId($tenantId).WithRedirectUri($redirectUri);
 
-    $authority = "https://login.microsoftonline.com/common"
-    $resource = $Uri.GetLeftPart([System.UriPartial]::Authority);
-
-    $promptBehavior = [Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Always
-    $platformParam = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters" -ArgumentList $promptBehavior
-    $authenticationContext = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext" -ArgumentList $authority, $False
-    $authenticationResult = $authenticationContext.AcquireTokenAsync($resource, $clientId, $redirectUri, $platformParam).Result
+    $authenticationResult = $pcaConfig.Build().AcquireTokenInteractive($scopes).WithPrompt([Microsoft.Identity.Client.Prompt]::NoPrompt).WithLoginHint($user).ExecuteAsync().Result;
 
     return $authenticationResult
 }
 
+# Gets Auth Token using MSAL library.
 function Set-SPOAuthenticationTicket([string] $siteUrl)
 {
     $siteUri = New-Object Uri -ArgumentList $siteUrl
 
-    $authResult = Get-AADAuthToken -Uri $siteUri
+    $authResult = Get-AuthToken -Uri $siteUri
     if ($authResult -ne $null)
     {
-        $global:accessHeader = $authResult.AccessTokenType + " " + $authResult.AccessToken
+        $global:accessHeader = $authResult.CreateAuthorizationHeader()
     }
     
     if ([String]::IsNullOrEmpty($global:accessHeader))
@@ -67,6 +70,8 @@ function Build-ReSTRequest([string] $siteUrl, [string]$endpoint, [string]$method
 
     # set Authorization header
     $req.Headers.Add("Authorization", $global:accessHeader)
+    # handle ETag
+    $req.Headers.Add("If-Match", "*")
     
     if (-not $isDigestRequest)
     {
